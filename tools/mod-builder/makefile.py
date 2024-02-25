@@ -7,7 +7,7 @@ TODO: Use subprocess instead of os.system
 
 from compile_list import CompileList
 import _files # create_directory, delete_file
-from common import request_user_input, cli_clear, MAKEFILE, TRIMBIN_OFFSET, GCC_OUT_FILE, COMP_SOURCE, GAME_INCLUDE_PATH, CONFIG_PATH, SRC_FOLDER, DEBUG_FOLDER, OUTPUT_FOLDER, BACKUP_FOLDER, OBJ_FOLDER, DEP_FOLDER, GCC_MAP_FILE, REDUX_MAP_FILE, CONFIG_PATH, MOD_NAME
+from common import request_user_input, cli_clear, MAKEFILE, TRIMBIN_OFFSET, GCC_OUT_FILE, COMP_SOURCE, GAME_INCLUDE_PATH, CONFIG_PATH, SRC_FOLDER, DEBUG_FOLDER, OUTPUT_FOLDER, BACKUP_FOLDER, OBJ_FOLDER, DEP_FOLDER, GCC_MAP_FILE, REDUX_MAP_FILE, CONFIG_PATH, MOD_NAME, DIR_GAME
 
 import logging
 import json
@@ -139,9 +139,10 @@ class Makefile:
         self.build_makefile_objects()
         buffer = f"""
         MODDIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+        GAMEDIR = {DIR_GAME}
         TARGET = mod
 
-        SRCS = {" ".join([str(i) for i in self.srcs])}
+        SRCS = {" ".join([str(i).replace(f"{str(DIR_GAME)}", "$(GAMEDIR)") for i in self.srcs])}
         CPPFLAGS = -DBUILD={self.build_id}
         LDSYMS = {" ".join(f"-T{str(sym)}" for sym in self.files_symbols)}
 
